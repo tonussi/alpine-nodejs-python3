@@ -1,20 +1,9 @@
-FROM mhart/alpine-node:12.4.0
+FROM node:14-alpine
 
-# If you have native dependencies, add these extra tools
-# RUN apk add --no-cache make gcc g++ python
-
-ENV TERM=xterm
-
-COPY kubefwd /
-RUN apk add --update --no-cache python3 \
-    python3-dev \
-    py-pip \
-    yarn \
-    git \
-    nano \
-    openssh-client \
-    curl \
- && rm -rf /var/cache/apk/* \
- && yarn config set "strict-ssl" false \
- && pip install awscli \
- && npm install -g pino-pretty
+RUN apk add --no-cache python python-dev python3 python3-dev \
+    linux-headers build-base bash git ca-certificates && \
+    python3 -m ensurepip && \
+    rm -r /usr/lib/python*/ensurepip && \
+    pip3 install --upgrade pip setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
+    rm -r /root/.cache
